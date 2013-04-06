@@ -96,6 +96,9 @@
 		})
 
 		$("#clear").click(function(){
+			$._messengerDefaults = {
+				extraClasses: 'messenger-fixed messenger-theme-future messenger-on-top'
+			}
 			$.post("clearOrder.php",function(resp){
 				if(resp=="success"){
 					//alert("现有订单已清除");
