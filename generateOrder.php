@@ -59,7 +59,7 @@
 						var lng = lngRandom();
 						var lat = latRandom();
 						var point = new BMap.Point(lng, lat);
-						var amount = Math.floor(Math.random()*200+100);
+						var amount = Math.floor(Math.random()*250+50);
 						gc.getLocation(point, function(resp){
 							var addComp = resp.addressComponents;
 				        	var location = addComp.city + addComp.district + addComp.street + addComp.streetNumber;
@@ -86,11 +86,13 @@
 	var lngRandom = function() {
 		var westLimit = 116.205;
 		var eastLimit = 116.57;
-		return Math.random() * (eastLimit - westLimit) + westLimit;
+		var lng = Math.random() * (eastLimit - westLimit) + westLimit;
+		return lng.toFixed(6);
 	}
 	var latRandom = function() {
 		var northLimit = 40.04;
 		var southLimit = 39.8;
-		return Math.random() * (northLimit - southLimit) + southLimit;
+		var lat = Math.random() * (northLimit - southLimit) + southLimit;
+		return lat.toFixed(6);
 	}
 </script>
