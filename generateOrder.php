@@ -14,8 +14,11 @@
 	    <meta charset="utf-8">
 	    <!-- Bootstrap -->
 	    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+	    <link href="HubSpot/build/css/messenger.css" rel="stylesheet" media="screen">
+	    <link href="HubSpot/build/css/messenger-theme-future.css" rel="stylesheet" media="screen">
 	    <script src="jquery.min.js"></script>
 	    <script src="bootstrap/js/bootstrap.min.js"></script>
+	    <script src="HubSpot/build/js/messenger.min.js"></script>
 	    <script type="text/javascript" src="http://api.map.baidu.com/api?v=1.4"></script>
 	    <style type="text/css">
 	    	.container {
@@ -95,7 +98,8 @@
 		$("#clear").click(function(){
 			$.post("clearOrder.php",function(resp){
 				if(resp=="success"){
-					alert("现有订单已清除");
+					//alert("现有订单已清除");
+					$.globalMessenger().post("现有订单已清除！");
 				}
 			});
 		})
