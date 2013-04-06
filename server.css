@@ -1,0 +1,95 @@
+#map{height:700px;width:70%;float:left;}
+#left{height:100%;width:28%;float:left;}
+#control{height:30%;}
+#order{height:70%;overflow:auto;}
+.pane-message {
+overflow-x: hidden;
+overflow-y: auto;
+border-right: 1px solid #CCC;
+background: #F6F6F6;
+}
+.pane-message .message-list {
+list-style: none;
+margin: 0;
+padding: 0;
+}
+ol {
+display: block;
+list-style-type: decimal;
+-webkit-margin-before: 1em;
+-webkit-margin-after: 1em;
+-webkit-margin-start: 0px;
+-webkit-margin-end: 0px;
+-webkit-padding-start: 40px;
+}
+.pane-message .message {
+border-bottom: 1px solid #EEE;
+-webkit-box-sizing: border-box;
+box-sizing: border-box;
+min-height: 80px;
+padding: 10px 10px 30px 10px;
+position: relative;
+overflow: hidden;
+color: #666;
+font-size: 0.8rem;
+}
+li {
+display: list-item;
+text-align: -webkit-match-parent;
+}
+.pane-message .category-heading {
+color: #666;
+font-size: 0.8rem;
+padding: 8px 0;
+text-align: center;
+border: none;
+border-bottom: 1px solid;
+background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #E6E6E6), color-stop(1, #DDD));
+background: -webkit-linear-gradient(top, #E6E6E6 0%, #DDD 100%);
+background: linear-gradient(top, #E6E6E6 0%, #DDD 100%);
+-webkit-box-shadow: inset 0 1px 0 #EEE;
+box-shadow: inset 0 1px 0 #EEE;
+border-color: #CCC;
+text-shadow: 0 1px 0 #F3F3F3;
+}
+.pane-message .message .title {
+display: block;
+color: #28F;
+text-decoration: none;
+font-size: 1rem;
+margin-bottom: 5px;
+white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
+}
+.pane-message .message .tag {
+font-size: 0.7rem;
+padding: 0 5px;
+-webkit-border-radius: 3px;
+border-radius: 3px;
+vertical-align: middle;
+color: #D2E7FF;
+background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #28F), color-stop(1, #0578FF));
+background: -webkit-linear-gradient(top, #28F 0%, #0578FF 100%);
+background: linear-gradient(top, #28F 0%, #0578FF 100%);
+-webkit-box-shadow: inset 0 1px 0px #4EA0FF;
+box-shadow: inset 0 1px 0px #4EA0FF;
+text-shadow: 0 -1px 0px #006BE7;
+border: 1px solid #006BE7;
+}
+.pane-message .message .toolbar {
+font-size: 0.7rem;
+white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
+color: #999;
+text-decoration: none;
+position: absolute;
+bottom: 5px;
+left: 10px;
+right: 10px;
+}
+#go {
+	margin: 10px;
+	display: block;
+}
