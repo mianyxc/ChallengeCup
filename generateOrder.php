@@ -31,11 +31,15 @@
 			  	<input class="span2" id="orderNum" type="text">
 			  	<button class="btn" type="button" id="new">新的需求点</button>
 			  	<button class="btn" type="button" id="old">现有需求点</button>
+			  	<button class="btn" type="button" id="clear">清除需求点</button>
 			</div>
 			<div style="margin:50px;display:none;" id="animation">
   				<img src="MetroUI/images/preloader-w8-cycle-black.gif" />
   			</div>
-  			<div id="waiting">
+  			<div style="margin:10px;display:none;" id="success">
+  				<img src="source/checkmark.png" />
+  			</div>
+  			<div id="message">
   			</div>
 		</div>
   	</body>
@@ -71,15 +75,29 @@
 								lng: lng,
 								lat: lat,
 								phone: "15201410992"
-							},function(res){if(res=="success") count++; $("#waiting").html("已生成"+count+"个订单");});
+							},function(res){
+								if(res=="success") count++;
+								$("#message").html("已生成"+count+"个订单");
+								if(count==orderNum) {
+									$("#animation").css("display","none");
+									$("#success").css("display","block");
+									$("message").html("成功添加"+i+"个新订单");
+								}
+							});
 							flag = true;
 							i++;
 						});
 					}
 				}
 			},200)
+		})
 
-
+		$("#clear").click(function(){
+			$.post("clearOrder.php",function(resp){
+				if(resp=="success"){
+					alert("现有订单已清除");
+				}
+			});
 		})
 	})
 
