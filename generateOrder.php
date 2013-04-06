@@ -84,7 +84,7 @@
 								if(count==orderNum) {
 									$("#animation").css("display","none");
 									$("#success").css("display","block");
-									$("message").html("成功添加"+i+"个新订单");
+									$("#message").html("成功添加"+i+"个新订单");
 								}
 							});
 							flag = true;
@@ -105,6 +105,26 @@
 					$.globalMessenger().post("现有订单已清除！");
 				}
 			});
+		})
+
+		$("#old").click(function(){
+			$("#animation").css("display","block");
+			$("#message").html("正在生成订单……");
+			$.post("batchOrder.php",{num:$("#orderNum").val()},function(resp){
+				if(resp=="success") {
+					$("#animation").css("display","none");
+					$("#success").css("display","block");
+					$("#message").html("成功添加"+$("#orderNum").val()+"个新订单");
+				}
+			})
+			/*$.post("queryLocation.php",{location_id:'0'},function(resp1){
+				var maxID = resp1;
+				var location_id = Math.ceil(Math.random()*maxID);
+				$.post("queryLocation.php",{location_id: 100},function(resp2){
+					var json = JSON.parse(resp2);
+					
+				})
+			})*/
 		})
 	})
 

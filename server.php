@@ -63,7 +63,7 @@
             <span class="add-on">载重量</span>
             <input class="span2" id="capacity" type="text" placeholder="输入数字">
         </div>
-        <button class="btn btn-large">规划配送方案</button>
+        <button class="btn btn-large" id="go">规划配送方案</button>
       </div>
       <div id="order" class="pane-message">
         <div id="main-page" style="display: block; ">

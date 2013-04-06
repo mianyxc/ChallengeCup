@@ -1,7 +1,8 @@
-#map{height:700px;width:70%;float:left;}
-#left{height:100%;width:28%;float:left;}
+html,body{height:100%;}
+#map{height:100%;width:70%;float:left;}
+#left{height:100%;width:30%;float:left;}
 #control{height:30%;}
-#order{height:70%;overflow:auto;}
+#order{height:60%;overflow:auto;}
 .pane-message {
 overflow-x: hidden;
 overflow-y: auto;
