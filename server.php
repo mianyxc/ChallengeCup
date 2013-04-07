@@ -3,7 +3,6 @@
 <?php
   
   require_once("DB_config.php");
-  //require_once("depotLocation.php");
 
   $DB_connect = new mysqli($DB_url, $DB_username, $DB_password, $DB_name);
   $DB_connect->query("set names utf8");
@@ -32,29 +31,6 @@
   <body>
     <div id="left">
       <div id="control" align='center' class="well sidebar-nav">
-        <!--
-        <form class="form-horizontal">
-          <div class="control-group">
-            <label class="control-label" for="inputVehicle">车辆总数</label>
-            <div class="controls">
-              <input type="text" id="inputVehicle" placeholder="" class="input-small">
-            </div>
-          </div>
-          <div class="control-group">
-            <label class="control-label" for="inputCapacity">载重量</label>
-            <div class="controls">
-              <input type="text" id="inputCapacity" placeholder="" class="input-small">
-            </div>
-          </div>
-          <div class="control-group">
-            <div class="controls">
-              <label class="checkbox">
-                <input type="checkbox"> Remember me
-              </label>
-              <button type="submit" class="btn">Sign in</button>
-            </div>
-          </div>
-        </form>-->
         <div class="input-prepend">
             <span class="add-on">车辆数</span>
             <input class="span2" id="vehicle" type="text" placeholder="输入数字">
@@ -79,20 +55,47 @@
 </html>
 
 <script type="text/javascript">
+  var current_responce = "";
+  var current_json;
+  var waiting;
+  var dealing;
+  var dealed;
   $(document).ready(function(){
     window.setInterval(function(){
-      $.get("orderFlow.php", function(resp){
-        $("#orderList").html(resp);
+      $.get("queryOrders.php", function(resp){
+        if(resp != current_responce) {
+          current_responce = resp;
+          current_json = JSON.parse(current_responce);
+          waiting = current_json.waiting;
+          dealed = current_json.dealed;
+          dealing = current_json.dealing;
+          listOrders();
+        }
       })
     }, 5000);
     
     $("#go").click(function(){
-      //alert("OK");
       showRoute([0,1,3,2]);
       showRoute([0,4,6,5,7]);
     })
     
   })
+
+  var listOrders = function(){
+    $("#orderList").html("");
+    for(var temp in waiting) {
+      $("#orderList").append("<li class='message'><a class='title' href='#'><span class='btn btn-warning'><i class='icon-time'></i>"+waiting[temp].amount+"</span>"+waiting[temp].location+"</a><span class='description'>"+waiting[temp].time+" - 尚未处理</span><div class='toolbar'><a class='handin-link' href='#'>查看订单详情</a></div></li>");
+
+    }
+    for(var temp in dealing) {
+      $("#orderList").append("<li class='message'><a class='title' href='#'><span class='btn btn-info'><i class='icon-shopping-cart'></i>"+waiting[temp].amount+"</span>"+waiting[temp].location+"</a><span class='description'>"+waiting[temp].time+" - 正在配送</span><div class='toolbar'><a class='handin-link' href='#'>查看订单详情</a></div></li>");
+      
+    }
+    for(var temp in waiting) {
+      $("#orderList").append("<li class='message'><a class='title' href='#'><span class='btn btn-success'><i class='icon-time'></i>"+waiting[temp].amount+"</span>"+waiting[temp].location+"</a><span class='description'>"+waiting[temp].time+" - 订单已完成</span><div class='toolbar'><a class='handin-link' href='#'>查看订单详情</a></div></li>");
+      
+    }
+  }
 </script>
 
 <script type="text/javascript">
@@ -104,24 +107,22 @@
   var depotMarker = new BMap.Marker(depot);
   map.addOverlay(depotMarker);
 
-  var orderLocation = [];
-  var newLocation = [];
-  var orderPoints = [];
+  //var orderLocation = [];
+  //var newLocation = [];
+  //var orderPoints = [];
 
   var showOrder = function(){
-    //alert("OK")
     map.clearOverlays();
     map.addOverlay(depotMarker);
-    //map.addOverlay(depotMarker);
     orderPoints = [];
     orderPoints.push(depot);
-    for(var i=0; i<orderLocation.length; i+=2) {
-      //alert(orderLocation[p])
+    /*
+    for(var i=0; i<waiting.length; i+=2) {
       var temp = new BMap.Point(orderLocation[i],orderLocation[i+1]);
       orderPoints.push(temp);
       var newMarker = new BMap.Marker(temp);
       map.addOverlay(newMarker);
-    }
+    }*/
   }
 
   var driving = new BMap.DrivingRoute(map);

@@ -102,7 +102,6 @@
 			}
 			$.post("clearOrder.php",function(resp){
 				if(resp=="success"){
-					//alert("现有订单已清除");
 					$.globalMessenger().post("现有订单已清除！");
 				}
 			});
@@ -118,14 +117,6 @@
 					$("#message").html("成功添加"+$("#orderNum").val()+"个新订单");
 				}
 			})
-			/*$.post("queryLocation.php",{location_id:'0'},function(resp1){
-				var maxID = resp1;
-				var location_id = Math.ceil(Math.random()*maxID);
-				$.post("queryLocation.php",{location_id: 100},function(resp2){
-					var json = JSON.parse(resp2);
-					
-				})
-			})*/
 		})
 	})
 
