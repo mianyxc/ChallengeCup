@@ -70,6 +70,7 @@
           dealed = current_json.dealed;
           dealing = current_json.dealing;
           listOrders();
+          showOrders();
         }
       })
     }, 5000);
@@ -107,22 +108,20 @@
   var depotMarker = new BMap.Marker(depot);
   map.addOverlay(depotMarker);
 
-  //var orderLocation = [];
-  //var newLocation = [];
-  //var orderPoints = [];
+  var orderPoints = [];
 
-  var showOrder = function(){
+  var showOrders = function(){
     map.clearOverlays();
     map.addOverlay(depotMarker);
     orderPoints = [];
     orderPoints.push(depot);
-    /*
-    for(var i=0; i<waiting.length; i+=2) {
-      var temp = new BMap.Point(orderLocation[i],orderLocation[i+1]);
-      orderPoints.push(temp);
-      var newMarker = new BMap.Marker(temp);
+    
+    for(var temp in waiting) {
+      var newPoint = new BMap.Point(waiting[temp].lng,waiting[temp].lat);
+      orderPoints.push(newPoint);
+      var newMarker = new BMap.Marker(newPoint);
       map.addOverlay(newMarker);
-    }*/
+    }
   }
 
   var driving = new BMap.DrivingRoute(map);
