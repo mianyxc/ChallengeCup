@@ -53,6 +53,7 @@
 	$(document).ready(function(){
 		$("#new").click(function(){
 			var orderNum = $("#orderNum").val();
+			$("#success").css("display","none");
 			$("#animation").css("display","block");
 			var gc = new BMap.Geocoder();
 			var i = 0;
