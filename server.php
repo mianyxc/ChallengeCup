@@ -71,14 +71,14 @@
           dealing = current_json.dealing;
           listOrders();
           showOrders();
+          $.post("checkCache.php",function(resp){
+            if(resp != "nice!") {
+              cache(resp);
+            }
+          })
         }
       })
     }, 5000);
-    
-    $("#go").click(function(){
-      showRoute([0,1,3,2]);
-      showRoute([0,4,6,5,7]);
-    })
     
   })
 
@@ -124,25 +124,52 @@
     }
   }
 
-  var driving = new BMap.DrivingRoute(map);
-  
-  driving.setSearchCompleteCallback(function(results){
-    
-    var pts = results.getPlan(0).getRoute(0).getPath();
-    var line = new BMap.Polyline(pts);
-    map.addOverlay(line);
-      
-    
-  });
+  var driving_cache = new BMap.DrivingRoute(map);
 
+  var toBeCached = [];
 
+  var cacheFlag = true;
 
-  function showRoute(route) {
+  var cache_interval;
 
-    for(var i=0; i<route.length; i++) {
-      driving.search(orderPoints[route[i]], orderPoints[route[(i+1)%route.length]]);
+  var cache = function(resp) {
+    toBeCached = [];
+    var json_resp = JSON.parse(resp);
+    var pairs = json_resp.data;
+    for(var temp in pairs) {
+      var starttemp = new BMap.Point(pairs[temp].start.lng, pairs[temp].start.lat);
+      var endtemp = new BMap.Point(pairs[temp].end.lng, pairs[temp].end.lat);
+      var startPoint = [];
+      var endPoint = [];
+      startPoint['location_id'] = pairs[temp].start.location_id;
+      startPoint['point'] = starttemp;
+      endPoint['location_id'] = pairs[temp].end.location_id;
+      endPoint['point'] = endtemp;
+      var pair = [];
+      pair['start'] = startPoint;
+      pair['end'] = endPoint;
+      toBeCached.push(pair);
     }
 
+    driving_cache.setSearchCompleteCallback(function(callback){
+      var distance = callback.getPlan(0).getDistance(false);
+      toBeCached[currentIndex]['distance'] = distance;
+      currentIndex++;
+      console.log(currentIndex);
+      if(currentIndex >= toBeCached.length) {
+        clearInterval(cache_interval);
+        console.log(toBeCached);
+      }
+      cacheFlag = true;
+    })
+
+    var currentIndex = 0;
+    cache_interval = setInterval(function(){
+      if(cacheFlag) {
+        cacheFlag = false;
+        driving_cache.search(toBeCached[currentIndex]['start']['point'], toBeCached[currentIndex]['end']['point']);
+      }
+    },200)
   }
 
 </script>
