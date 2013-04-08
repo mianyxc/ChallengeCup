@@ -4,7 +4,7 @@
 
 	$DB_connect = new mysqli($DB_url, $DB_username, $DB_password, $DB_name);
 	$DB_connect->query("set names utf8");
-	$sql = "select * from orders where state=0 and cached=0 order by id";
+	$sql = "select * from orders where state=0 order by id";
 	$result = $DB_connect->query($sql);
 	$orders = array();
 	while($temp = $result->fetch_array()) {

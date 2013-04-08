@@ -71,11 +71,7 @@
           dealing = current_json.dealing;
           listOrders();
           showOrders();
-          $.post("checkCache.php",function(resp){
-            if(resp != "nice!") {
-              cache(resp);
-            }
-          })
+          checkCache();
         }
       })
     }, 5000);
@@ -96,6 +92,14 @@
       $("#orderList").append("<li class='message'><a class='title' href='#'><span class='btn btn-success'><i class='icon-time'></i>"+waiting[temp].amount+"</span>"+waiting[temp].location+"</a><span class='description'>"+waiting[temp].time+" - 订单已完成</span><div class='toolbar'><a class='handin-link' href='#'>查看订单详情</a></div></li>");
       
     }
+  }
+
+  var checkCache = function(){
+    $.post("checkCache.php",function(resp){
+      if(resp != "nice!") {
+        cache(resp);
+      }
+    })
   }
 </script>
 
@@ -139,37 +143,54 @@
     for(var temp in pairs) {
       var starttemp = new BMap.Point(pairs[temp].start.lng, pairs[temp].start.lat);
       var endtemp = new BMap.Point(pairs[temp].end.lng, pairs[temp].end.lat);
-      var startPoint = [];
-      var endPoint = [];
-      startPoint['location_id'] = pairs[temp].start.location_id;
-      startPoint['point'] = starttemp;
-      endPoint['location_id'] = pairs[temp].end.location_id;
-      endPoint['point'] = endtemp;
-      var pair = [];
-      pair['start'] = startPoint;
-      pair['end'] = endPoint;
+      var startPoint = new Object();
+      var endPoint = new Object();
+      startPoint.location_id = pairs[temp].start.location_id;
+      startPoint.point = starttemp;
+      endPoint.location_id = pairs[temp].end.location_id;
+      endPoint.point = endtemp;
+      var pair = new Object();
+      pair.start = startPoint;
+      pair.end = endPoint;
+      pair.distance = 0;
       toBeCached.push(pair);
     }
 
     driving_cache.setSearchCompleteCallback(function(callback){
       var distance = callback.getPlan(0).getDistance(false);
-      toBeCached[currentIndex]['distance'] = distance;
+      toBeCached[currentIndex].distance = distance;
       currentIndex++;
       console.log(currentIndex);
       if(currentIndex >= toBeCached.length) {
         clearInterval(cache_interval);
         console.log(toBeCached);
+        sendCache();
       }
       cacheFlag = true;
     })
 
     var currentIndex = 0;
+    var timeWaited = 0;
     cache_interval = setInterval(function(){
       if(cacheFlag) {
         cacheFlag = false;
-        driving_cache.search(toBeCached[currentIndex]['start']['point'], toBeCached[currentIndex]['end']['point']);
+        timeWaited = 0;
+        driving_cache.search(toBeCached[currentIndex].start.point, toBeCached[currentIndex].end.point);
+      }
+      timeWaited += 200;
+      if(timeWaited >= 20000) {
+        clearInterval(cache_interval);
+        sendCache();
       }
     },200)
+  }
+
+  var sendCache = function(){
+    var cacheToSend = JSON.stringify(toBeCached);
+    console.log(cacheToSend);
+    $.post("cache.php",{cache: cacheToSend}, function(res){
+      checkCache();
+    });
   }
 
 </script>
