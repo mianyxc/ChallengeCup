@@ -27,6 +27,8 @@
     <script src="jquery.min.js"></script>
     <script src="bootstrap/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="http://api.map.baidu.com/api?v=1.4"></script>
+    <script type="text/javascript" src="TextIconOverlay.js"></script>
+    <script type="text/javascript" src="MarkerClusterer.js"></script>
   </head>
   <body>
     <div id="left">
@@ -123,7 +125,7 @@
     for(var temp in waiting) {
       var newPoint = new BMap.Point(waiting[temp].lng,waiting[temp].lat);
       orderPoints.push(newPoint);
-      var newMarker = new BMap.Marker(newPoint);
+      var newMarker = new BMapLib.TextIconOverlay(newPoint,waiting[temp].amount);
       map.addOverlay(newMarker);
     }
   }
