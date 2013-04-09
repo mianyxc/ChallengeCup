@@ -10,10 +10,43 @@
 	while($temp = $result->fetch_array()) {
 		$orders[] = $temp;
 	}
+	$sql_depot = "select * from location where id=0";
+	$result_depot = $DB_connect->query($sql_depot);
+	$depot = $result_depot->fetch_array();
 	$checked = array();
 	$resp = array();
 	$state = "nothing";
 	foreach ($orders as $order) {
+		$start = $order['location_id'];
+		$end = $depot['id'];
+		$sql_check = "select * from cache where start='$start' and end='$end'";
+		$temp = $DB_connect->query($sql_check);
+		if(!($temp->fetch_array())) {
+			$toBeChecked = array();
+			$toBeChecked['start']['location_id'] = $order['location_id'];
+			$toBeChecked['start']['lng'] = $order['lng'];
+			$toBeChecked['start']['lat'] = $order['lat'];
+			$toBeChecked['end']['location_id'] = $depot['id'];
+			$toBeChecked['end']['lng'] = $depot['lng'];
+			$toBeChecked['end']['lat'] = $depot['lat'];
+			$resp[] = $toBeChecked;
+			$state = "complete";
+		}
+		$start = $depot['id'];
+		$end = $order['location_id'];
+		$sql_check = "select * from cache where start='$start' and end='$end'";
+		$temp = $DB_connect->query($sql_check);
+		if(!($temp->fetch_array())) {
+			$toBeChecked = array();
+			$toBeChecked['start']['location_id'] = $depot['id'];
+			$toBeChecked['start']['lng'] = $depot['lng'];
+			$toBeChecked['start']['lat'] = $depot['lat'];
+			$toBeChecked['end']['location_id'] = $order['location_id'];
+			$toBeChecked['end']['lng'] = $order['lng'];
+			$toBeChecked['end']['lat'] = $order['lat'];
+			$resp[] = $toBeChecked;
+			$state = "complete";
+		}
 		foreach ($checked as $checkedOrder) {
 			$start = $order['location_id'];
 			$end = $checkedOrder['location_id'];

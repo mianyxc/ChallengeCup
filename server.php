@@ -28,7 +28,6 @@
     <script src="bootstrap/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="http://api.map.baidu.com/api?v=1.4"></script>
     <script type="text/javascript" src="TextIconOverlay.js"></script>
-    <script type="text/javascript" src="MarkerClusterer.js"></script>
   </head>
   <body>
     <div id="left">
@@ -77,6 +76,10 @@
         }
       })
     }, 5000);
+
+    $("#go").click(function(){
+      window.open("route.php?vehicle="+$("#vehicle").val()+"&capacity="+$("#capacity").val());
+    })
     
   })
 
@@ -115,17 +118,20 @@
   map.addOverlay(depotMarker);
 
   var orderPoints = [];
+  var markers = [];
 
   var showOrders = function(){
     map.clearOverlays();
     map.addOverlay(depotMarker);
     orderPoints = [];
+    markers = [];
     orderPoints.push(depot);
     
     for(var temp in waiting) {
       var newPoint = new BMap.Point(waiting[temp].lng,waiting[temp].lat);
       orderPoints.push(newPoint);
       var newMarker = new BMapLib.TextIconOverlay(newPoint,waiting[temp].amount);
+      markers.push(newMarker);
       map.addOverlay(newMarker);
     }
   }
