@@ -13,12 +13,14 @@
 	$depot = $result_depot->fetch_array();
 
 	$orders = array();
+	$amount = array();
 
   	$sql_orders = "select * from orders where state=0 order by location_id";
   	$result = $DB_connect->query($sql_orders);
 	
 	while($temp = $result->fetch_array()) {
 		$orders[] = $temp;
+		$amount[] = $temp['amount'];
 	}
 
 	$distance = array();
@@ -57,7 +59,12 @@
 		$distance[] = $temp_distance;
 	}
 
-	$data = "".$vehicle."\n".$capacity."\n".(count($orders)+1)."\n";
+	$data = "".(count($orders)+1)."\n"."".$vehicle."\n".$capacity."\n";
+
+	foreach ($amount as $need) {
+		$data = $data.$need." ";
+	}
+	$data = $data."\n";
 
 	foreach ($distance as $row) {
 		foreach ($row as $temp) {
@@ -73,6 +80,8 @@
   	fwrite($file, $data);
 
   	fclose($file);
+
+  	echo system("GA.exe");
 
 
 ?>
