@@ -12,7 +12,7 @@
 #define GEN 100
 #define POP 200
 #define CROSSPROB 0.5
-#define MUPROB 0.4
+#define MUPROB 0.1
 #define FITPARA 1
 #define MAXNODES 500
 
@@ -56,7 +56,9 @@ public:
 			}
 
 		}
+		normalize();
 		getDistance();
+		//optimize();
 		//cout << fitness << endl;
 	}
 
@@ -99,6 +101,7 @@ public:
 				break;
 			}
 		}
+		if(depotNo==0) return;
 		for(int i = 0; i < numNodes; i++) {
 			temp[i] = route[i];
 		}
@@ -125,7 +128,7 @@ public:
 
 	}
 
-	void mutation() {
+	void mutation() {/*
 		int begin = random();
 		int end = random();
 		int temp;
@@ -139,7 +142,9 @@ public:
 			route[begin+i] = route[end-i];
 			route[end-i] = temp;
 		}
-		getDistance();
+		normalize();
+		getDistance();*/
+		optimize();
 	}
 
 	void printRoute() {
@@ -157,6 +162,31 @@ public:
 		//fitness = MAXNODES/(double)(totalDistance - best + FITPARA);
 		//cout << fitness << endl;
 		fitness = best/(double)(totalDistance - best + best/50);
+	}
+
+	void optimize() {
+		int currentDistance;
+		int temp;
+		getDistance();
+		for(int i = 1; i < numNodes; i++) {
+			for(int j = 1; j < numNodes; j++) {
+				if(j == i) continue;
+				currentDistance = totalDistance;
+				temp = route[i];
+				route[i] = route[j];
+				route[j] = temp;
+				getDistance();
+				if(totalDistance < currentDistance) {
+					i = 0;
+					break;
+				} else {
+					temp = route[i];
+					route[i] = route[j];
+					route[j] = temp;
+					getDistance();
+				}
+			}
+		}
 	}
 
 };
@@ -219,6 +249,8 @@ public:
 			}
 			routes[i].normalize();
 			routes[i+1].normalize();
+			//routes[i].optimize();
+			//routes[i+1].optimize();
 			if(routes[i].totalDistance < best.totalDistance) {
 				best = routes[i];
 				//best.printRoute();
@@ -383,6 +415,8 @@ int main(){
 			group.crossover();
 			group.mutate();
 		}
+
+		group.best.optimize();
 
 		//cout << group.best.totalDistance << endl;
 

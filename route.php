@@ -109,9 +109,11 @@
 	    <script type="text/javascript" src="http://api.map.baidu.com/api?v=1.4"></script>
 	    <style type="text/css">
 	    	.container {
-	    		text-align:center;
 	    		vertical-align: middle;
-	    		margin-top: 300px;
+	    		margin-top: 200px;
+	    	}
+	    	#message {
+	    		text-align: center;
 	    	}
 	    </style>
   	</head>
@@ -123,24 +125,25 @@
   			<?php echo $depot_json;?>
   		</div>
 
-  		<div class="container">
-			<div style="margin:50px;" id="animation">
-  				<img src="MetroUI/images/preloader-w8-line-black.gif" />
-  			</div>
-  			<div id="message">
-  				路径规划中……
-  			</div>
-		</div>
-		<div id="left" style="display:none;">
-	      <div id="routes">
-	        <div id="main-page" style="display: block; ">
-	          <!--<ol id="orderList" class="message-list"></ol>-->
-	          <div id="accordion">
-	          </div>
-	        </div>
-	      </div>
+  		
+		<div id="left">
+			<div class="container">
+				<div style="margin:50px;" id="animation">
+	  				<img src="MetroUI/images/preloader-w8-line-black.gif" />
+	  			</div>
+	  			<div id="message">
+	  				路径规划中……
+	  			</div>
+			</div>
+		    <div id="routes">
+		        <div id="main-page" style="display: block; ">
+		          	<!--<ol id="orderList" class="message-list"></ol>-->
+		          	<div id="accordion">
+		          	</div>
+		        </div>
+		    </div>
 	    </div>
-		<div id="map" style="display:none;">
+		<div id="map">
 		</div>
   	</body>
 
@@ -151,14 +154,38 @@
 	var orders = JSON.parse(orders_json);
 	var depot = JSON.parse(depot_json);
 	var routes;
+	var lines = [];
+	var colors = ["red", "blue", "black", "green", "fuchsia", "navy", "purple"];
+	var currentLine;
+	var flag;
+	var timeWaited;
 	//alert(orders_json);
 </script>
 <script type="text/javascript">
+	var map = new BMap.Map("map");
+  	map.centerAndZoom("北京");
+  	map.enableScrollWheelZoom();
+
+  	var depotPoint = new BMap.Point(depot.lng, depot.lat);
+  	
+  	var driving = new BMap.DrivingRoute(map);
+
+  	driving.setSearchCompleteCallback(function(results){
+  		//alert("callback");
+  		if(results){
+	  		var pts = results.getPlan(0).getRoute(0).getPath();
+	  		var polyline = new BMap.Polyline(pts,{strokeColor:lines[currentLine].color});
+	        map.addOverlay(polyline);
+	        currentLine++;
+	        flag = true;
+        } else {
+        	flag = true;
+        }
+  	});
+
 	$(document).ready(function(){
 		$.post("GA.php", function(resp){
 			$(".container").css('display','none');
-			$("#left").css('display','block');
-			$("#map").css('display','block');
 			routes = JSON.parse(resp);
 			for(var routeNo in routes) {
 				var routeString = "<h3>车辆编号："+routeNo+"</h3><div><ul class='sortable'>";
@@ -167,6 +194,15 @@
 					var node = route[nodeNo]-1;
 					var nodeString = "<li class='node'>" + orders[node].location + "</li>"
 					routeString += nodeString;
+					if(nodeNo == 0) {
+						lines.push({start: depotPoint,end: new BMap.Point(orders[node].lng, orders[node].lat), color: colors[routeNo%colors.length]});
+					} else {
+						var pre = route[nodeNo-1] -1;
+						lines.push({start: new BMap.Point(orders[pre].lng, orders[pre].lat),end: new BMap.Point(orders[node].lng, orders[node].lat), color: colors[routeNo%colors.length]});
+					}
+					if(nodeNo == route.length-1) {
+						lines.push({start: new BMap.Point(orders[node].lng, orders[node].lat), end: depotPoint, color: colors[routeNo%colors.length]});
+					}
 				}
 				routeString += "</ul></div>";
 				$("#accordion").append(routeString);
@@ -176,6 +212,26 @@
 			$("#accordion").accordion({active:false,collapsible:true});
 			$(".sortable").sortable();
 			$(".sortable").disableSelection();
+			//console.log(lines);
+			//console.log(depot);
+			currentLine = 0;
+			flag = true;
+			var interval = setInterval(function(){
+				if(currentLine >= lines.length) {
+					clearInterval(interval);
+				} else {
+					if(flag) {
+						flag = false;
+						timeWaited = 0;
+						driving.search(lines[currentLine].start, lines[currentLine].end);
+					} else {
+						timeWaited += 200;
+						if(timeWaited > 20000) {
+							flag = true;
+						}
+					}
+				}
+			},200);
 		})
 	})
 </script>
