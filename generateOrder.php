@@ -34,7 +34,8 @@
 			  	<input class="span2" id="orderNum" type="text">
 			  	<button class="btn" type="button" id="new">新的需求点</button>
 			  	<button class="btn" type="button" id="old">现有需求点</button>
-			  	<button class="btn" type="button" id="clear">清除需求点</button>
+			  	<button class="btn" type="button" id="clearOrder">清除需求点</button>
+			  	<button class="btn" type="button" id="clearCache">清除缓存</button>
 			</div>
 			<div style="margin:50px;display:none;" id="animation">
   				<img src="MetroUI/images/preloader-w8-cycle-black.gif" />
@@ -96,13 +97,24 @@
 			},200)
 		})
 
-		$("#clear").click(function(){
+		$("#clearOrder").click(function(){
 			$._messengerDefaults = {
 				extraClasses: 'messenger-fixed messenger-theme-future messenger-on-top'
 			}
 			$.post("clearOrder.php",function(resp){
 				if(resp=="success"){
 					$.globalMessenger().post("现有订单已清除！");
+				}
+			});
+		})
+
+		$("#clearCache").click(function(){
+			$._messengerDefaults = {
+				extraClasses: 'messenger-fixed messenger-theme-future messenger-on-top'
+			}
+			$.post("clearCache.php",function(resp){
+				if(resp=="success"){
+					$.globalMessenger().post("现有缓存已清除！");
 				}
 			});
 		})

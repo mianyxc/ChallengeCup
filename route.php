@@ -159,6 +159,7 @@
 	var currentLine;
 	var flag;
 	var timeWaited;
+	var orderIDs = [];
 	//alert(orders_json);
 </script>
 <script type="text/javascript">
@@ -183,6 +184,10 @@
         }
   	});
 
+  	$._messengerDefaults = {
+		extraClasses: 'messenger-fixed messenger-theme-future messenger-on-top'
+	}
+
 	$(document).ready(function(){
 		$.post("GA.php", function(resp){
 			$(".container").css('display','none');
@@ -193,6 +198,7 @@
 				for(var nodeNo in route) {
 					var node = route[nodeNo]-1;
 					var nodeString = "<li class='node'>" + orders[node].location + "</li>"
+					orderIDs.push(orders[node].id);
 					routeString += nodeString;
 					if(nodeNo == 0) {
 						lines.push({start: depotPoint,end: new BMap.Point(orders[node].lng, orders[node].lat), color: colors[routeNo%colors.length]});
@@ -210,8 +216,36 @@
 			$("#accordion").accordion();
 			$("#accordion").accordion('destroy');
 			$("#accordion").accordion({active:false,collapsible:true});
-			$(".sortable").sortable();
-			$(".sortable").disableSelection();
+			//$(".sortable").sortable();
+			//$(".sortable").disableSelection();
+			$("li").each(function(i){
+				this.onclick = function() {
+					var temp = this;
+					var msg = $.globalMessenger().post({
+					  	message: "确认订单完成？",
+					  	actions: {
+					    	confirm: {
+						      	label: '确认',
+						      	action: function() {
+						      		$.post("modifyOrder.php", {id: orderIDs[i], state: 2}, function(resp){
+						      			if(resp == "success") {
+						      				$.globalMessenger().post("订单已确认！");
+						      			}
+						      		});
+						      		$(temp).css("display","none");
+						      		return msg.cancel();
+						      	}
+					    	},
+					    cancel: {
+						      	label: '取消',
+						      	action: function() {
+						        	return msg.cancel();
+						      	}
+					    	}
+					  	}
+					});
+				}
+			});
 			//console.log(lines);
 			//console.log(depot);
 			currentLine = 0;
