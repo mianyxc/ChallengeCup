@@ -90,11 +90,11 @@
 
     }
     for(var temp in dealing) {
-      $("#orderList").append("<li class='message'><a class='title' href='#'><span class='btn btn-info'><i class='icon-shopping-cart'></i>"+waiting[temp].amount+"</span>"+waiting[temp].location+"</a><span class='description'>"+waiting[temp].time+" - 正在配送</span><div class='toolbar'><a class='handin-link' href='#'>查看订单详情</a></div></li>");
+      $("#orderList").append("<li class='message'><a class='title' href='#'><span class='btn btn-info'><i class='icon-shopping-cart'></i>"+dealing[temp].amount+"</span>"+dealing[temp].location+"</a><span class='description'>"+dealing[temp].time+" - 正在配送</span><div class='toolbar'><a class='handin-link' href='#'>查看订单详情</a></div></li>");
       
     }
-    for(var temp in waiting) {
-      $("#orderList").append("<li class='message'><a class='title' href='#'><span class='btn btn-success'><i class='icon-time'></i>"+waiting[temp].amount+"</span>"+waiting[temp].location+"</a><span class='description'>"+waiting[temp].time+" - 订单已完成</span><div class='toolbar'><a class='handin-link' href='#'>查看订单详情</a></div></li>");
+    for(var temp in dealed) {
+      $("#orderList").append("<li class='message'><a class='title' href='#'><span class='btn btn-success'><i class='icon-check'></i>"+dealed[temp].amount+"</span>"+dealed[temp].location+"</a><span class='description'>"+dealed[temp].time+" - 订单已完成</span><div class='toolbar'><a class='handin-link' href='#'>查看订单详情</a></div></li>");
       
     }
   }
