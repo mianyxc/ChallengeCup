@@ -33,12 +33,16 @@
     <div id="left">
       <div id="control" align='center' class="well sidebar-nav">
         <div class="input-prepend">
-            <span class="add-on">车辆数</span>
+            <span class="add-on">车辆总数</span>
             <input class="span2" id="vehicle" type="text" placeholder="输入数字">
         </div>
         <div class="input-prepend">
-            <span class="add-on">载重量</span>
+            <span class="add-on">准载重量</span>
             <input class="span2" id="capacity" type="text" placeholder="输入数字">
+        </div>
+        <div class="input-prepend">
+            <span class="add-on">质量参数</span>
+            <input class="span2" id="parameter" type="text" placeholder="输入数字">
         </div>
         <button class="btn btn-large" id="go">规划配送方案</button>
       </div>
@@ -78,7 +82,7 @@
     }, 5000);
 
     $("#go").click(function(){
-      window.open("route.php?vehicle="+$("#vehicle").val()+"&capacity="+$("#capacity").val());
+      window.open("route.php?vehicle="+$("#vehicle").val()+"&capacity="+$("#capacity").val()+"&parameter="+$("#parameter").val());
     })
     
   })

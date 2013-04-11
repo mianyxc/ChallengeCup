@@ -2,6 +2,7 @@
 
 	$vehicle = $_GET['vehicle'];
   	$capacity = $_GET['capacity'];
+  	$parameter = $_GET['parameter'];
 
 	require_once("DB_config.php");
 
@@ -59,7 +60,7 @@
 		$distance[] = $temp_distance;
 	}
 
-	$data = "".(count($orders)+1)."\n"."".$vehicle."\n".$capacity."\n";
+	$data = "".(count($orders)+1)."\n"."".$vehicle."\n".$capacity."\n".$parameter."\n";
 
 	foreach ($amount as $need) {
 		$data = $data.$need." ";
@@ -81,7 +82,49 @@
 
   	fclose($file);
 
-  	echo system("GA.exe");
-
-
 ?>
+
+<!DOCTYPE html>
+<html>
+  	<head>
+	    <title>随机生成需求</title>
+	    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	    <meta charset="utf-8">
+	    <!-- Bootstrap -->
+	    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+	    <link href="HubSpot/build/css/messenger.css" rel="stylesheet" media="screen">
+	    <link href="HubSpot/build/css/messenger-theme-future.css" rel="stylesheet" media="screen">
+	    <script src="jquery.min.js"></script>
+	    <script src="bootstrap/js/bootstrap.min.js"></script>
+	    <script src="HubSpot/build/js/messenger.min.js"></script>
+	    <script type="text/javascript" src="http://api.map.baidu.com/api?v=1.4"></script>
+	    <style type="text/css">
+	    	.container {
+	    		text-align:center;
+	    		vertical-align: middle;
+	    		margin-top: 300px;
+	    	}
+	    </style>
+  	</head>
+  	<body>
+  		<div class="container">
+			<div style="margin:50px;" id="animation">
+  				<img src="MetroUI/images/preloader-w8-line-black.gif" />
+  			</div>
+  			<div id="message">
+  				路径规划中……
+  			</div>
+		</div>
+		<div id="map">
+		</div>
+  	</body>
+
+</html>
+<script type="text/javascript">
+	$(document).ready(function(){
+		$.post("GA.php", function(resp){
+			$(".container").css('display','none');
+			$("#map").html(resp);
+		})
+	})
+</script>

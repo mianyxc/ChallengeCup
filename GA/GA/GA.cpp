@@ -11,10 +11,9 @@
 
 #define GEN 100
 #define POP 200
-#define CROSSPROB 0.8
-#define MUPROB 0.05
+#define CROSSPROB 0.5
+#define MUPROB 0.4
 #define FITPARA 1
-#define LOOP 30
 #define MAXNODES 500
 
 using namespace std;
@@ -26,6 +25,7 @@ int need[MAXNODES];
 int numNodes;
 int vehicle;
 int capacity;
+int loop;
 
 int random() {
 	return abs(rand())%numNodes;
@@ -156,7 +156,7 @@ public:
 		//cout << best << endl;
 		//fitness = MAXNODES/(double)(totalDistance - best + FITPARA);
 		//cout << fitness << endl;
-		fitness = best/(double)(totalDistance - best + best/10);
+		fitness = best/(double)(totalDistance - best + best/50);
 	}
 
 };
@@ -358,16 +358,13 @@ int main(){
 	fin >> numNodes;
 	fin >> vehicle;
 	fin >> capacity;
-	//cout << numNodes << endl;
-	//cout << vehicle << endl;
-	//cout << capacity << endl;
+	fin >> loop;
 	int temp;
 	need[0] = 0;
 	for(int i = 1; i < numNodes; i++) {
 		fin >> temp;
 		need[i] = temp;
 	}
-	//cout << need[30] << endl;
 	for(int i = 0; i < numNodes; i++) {
 		for(int j = 0; j < numNodes; j++) {
 			fin >> temp;
@@ -376,27 +373,35 @@ int main(){
 	}
 	fin.close();
 
-	Group group;
+	Route bestBest;
+
+	for(int l = 0; l < loop; l++) {
+		Group group;
 	
-	for(int i = 0; i < GEN; i++) {
-		//cout << i;
-		group.naturalSelect();
-		group.crossover();
-		group.mutate();
+		for(int i = 0; i < GEN; i++) {
+			group.naturalSelect();
+			group.crossover();
+			group.mutate();
+		}
+
+		cout << group.best.totalDistance << endl;
+
+		if(group.best.totalDistance < bestBest.totalDistance) {
+			bestBest = group.best;
+		}
 	}
 
+	cout << bestBest.totalDistance << endl;
+
 	int currentCapacity = capacity;
-
-	//cout << group.best.totalDistance;
-
 	for(int i = 0; i < numNodes; i++) {
-		currentCapacity -= need[group.best.route[i]];
+		currentCapacity -= need[bestBest.route[i]];
 		if(currentCapacity < 0) {
 			currentCapacity = capacity;
 			cout << 0 << " ";
-			cout << group.best.route[i] << " ";
+			cout << bestBest.route[i] << " ";
 		} else {
-			cout << group.best.route[i] << " ";
+			cout << bestBest.route[i] << " ";
 		}
 	}
 	cout << 0;
