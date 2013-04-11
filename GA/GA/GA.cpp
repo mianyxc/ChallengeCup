@@ -384,27 +384,28 @@ int main(){
 			group.mutate();
 		}
 
-		cout << group.best.totalDistance << endl;
+		//cout << group.best.totalDistance << endl;
 
 		if(group.best.totalDistance < bestBest.totalDistance) {
 			bestBest = group.best;
 		}
 	}
 
-	cout << bestBest.totalDistance << endl;
-
+	//cout << bestBest.totalDistance << endl;
+	
 	int currentCapacity = capacity;
-	for(int i = 0; i < numNodes; i++) {
+	for(int i = 1; i < numNodes; i++) {
 		currentCapacity -= need[bestBest.route[i]];
-		if(currentCapacity < 0) {
+		if( i == 1) {cout << "[[\"" << bestBest.route[i] << "\"";}
+		else if(currentCapacity < 0) {
 			currentCapacity = capacity;
-			cout << 0 << " ";
-			cout << bestBest.route[i] << " ";
+			cout << "],";
+			cout << "[\"" << bestBest.route[i] << "\"";
 		} else {
-			cout << bestBest.route[i] << " ";
+			cout << ",\"" << bestBest.route[i] << "\"";
 		}
 	}
-	cout << 0;
+	cout << "]]";
 
 
 	return 0;
