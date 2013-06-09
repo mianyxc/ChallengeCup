@@ -28,6 +28,7 @@
     <script src="bootstrap/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="http://api.map.baidu.com/api?v=1.4"></script>
     <script type="text/javascript" src="TextIconOverlay.js"></script>
+    <script type="text/javascript" src="MarkerClusterer.js"></script>
   </head>
   <body>
     <div id="left">
@@ -44,7 +45,12 @@
             <span class="add-on">质量参数</span>
             <input class="span2" id="parameter" type="text" placeholder="输入数字">
         </div>
-        <button class="btn btn-large" id="go">规划配送方案</button>
+        <div>
+          <button class="btn btn-large" id="go">规划配送方案</button>
+        </div>
+        <div>
+          <button class="btn btn-large" id="cluster">附近点合并/不合并</button>
+        </div>
       </div>
       <div id="order" class="pane-message">
         <div id="main-page" style="display: block; ">
@@ -83,6 +89,11 @@
 
     $("#go").click(function(){
       window.open("route.php?vehicle="+$("#vehicle").val()+"&capacity="+$("#capacity").val()+"&parameter="+$("#parameter").val());
+    })
+
+    $("#cluster").click(function(){
+      cluster = !cluster;
+      showOrders();
     })
     
   })
@@ -123,6 +134,7 @@
 
   var orderPoints = [];
   var markers = [];
+  var cluster = true;
 
   var showOrders = function(){
     map.clearOverlays();
@@ -135,8 +147,20 @@
       var newPoint = new BMap.Point(waiting[temp].lng,waiting[temp].lat);
       orderPoints.push(newPoint);
       var newMarker = new BMapLib.TextIconOverlay(newPoint,waiting[temp].amount);
+      //var newMarker = new BMap.Marker(newPoint,waiting[temp].amount);
       markers.push(newMarker);
-      map.addOverlay(newMarker);
+      //map.addOverlay(newMarker);
+    }
+    showCluster();
+  }
+
+  var showCluster = function(){
+    if(cluster) {
+      var markerClusterer = new BMapLib.MarkerClusterer(map, {markers:markers});
+    } else {
+      for(var i in markers) {
+        map.addOverlay(markers[i]);
+      }
     }
   }
 
