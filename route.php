@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <?php
-
+	set_time_limit('0');
 	$vehicle = $_GET['vehicle'];
   	$capacity = $_GET['capacity'];
   	$parameter = $_GET['parameter'];

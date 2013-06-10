@@ -1,5 +1,5 @@
 <?php
-	
+	set_time_limit('0');
 	require_once("DB_config.php");
 
 	$DB_connect = new mysqli($DB_url, $DB_username, $DB_password, $DB_name);

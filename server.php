@@ -46,7 +46,7 @@
             <input class="span2" id="parameter" type="text" placeholder="输入数字">
         </div>
         <div>
-          <button class="btn btn-large" id="go">规划配送方案</button>
+          <button class="btn btn-large" id="go" disabled="true">规划配送方案</button>
         </div>
         <div>
           <button class="btn btn-large" id="cluster">附近点合并/不合并</button>
@@ -71,7 +71,9 @@
   var waiting;
   var dealing;
   var dealed;
+
   $(document).ready(function(){
+
     window.setInterval(function(){
       $.get("queryOrders.php", function(resp){
         if(resp != current_responce) {
@@ -116,7 +118,11 @@
 
   var checkCache = function(){
     $.post("checkCache.php",function(resp){
-      if(resp != "nice!") {
+      if(resp == "nice!") {
+        $('#go').removeAttr("disabled");
+      } else {
+        $('#go').attr('disabled',"true");
+        cacheFlag = true;
         cache(resp);
       }
     })
@@ -199,7 +205,7 @@
       console.log(currentIndex);
       if(currentIndex >= toBeCached.length) {
         clearInterval(cache_interval);
-        console.log(toBeCached);
+        //console.log(toBeCached);
         sendCache();
       }
       cacheFlag = true;
@@ -221,9 +227,20 @@
     },200)
   }
 
+  var failed = 0;
+
   var sendCache = function(){
+    if(toBeCached[0].distance == 0) {
+      failed++;
+      if(failed >= 2) {
+        window.location.href="server.php";
+      }
+    } else {
+      failed = 0;
+    }
     var cacheToSend = JSON.stringify(toBeCached);
-    console.log(cacheToSend);
+    //console.log(cacheToSend);
+    console.log("Send to cache.");
     $.post("cache.php",{cache: cacheToSend}, function(res){
       checkCache();
     });
